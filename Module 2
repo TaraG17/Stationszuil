@@ -21,7 +21,7 @@ for bericht in berichten:
         keuring = input("Is dit bericht goedgekeurd:" + gesplitst[4] + "\n" + " Ja/Nee: ")
         if keuring == "Ja" or keuring == "Nee":
 
-            connection_string = "host='localhost' dbname='StationZuil' user='Taartje' password='geheimpje123'"
+            connection_string = "host='4.234.116.133' dbname='stationszuil' user='postgres' password='geheimpje1234'"
             conn = psycopg2.connect(connection_string) #maakt connectie met Database
             cursor = conn.cursor()
             #---query bericht---
