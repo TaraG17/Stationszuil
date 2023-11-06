@@ -26,7 +26,7 @@ file = open("testmodule1.csv")  # opent de file
 berichten = file.readlines()  # leest de file per lijn
 file.close()  # sluit de file
 
-resultaat = date + "|" + time + "| Station " + randomstation + " | " + str(naam) + " " + "|" + " " + str(bericht) + "\n"
+resultaat = date + "|" + time + "|" + randomstation + " | " + str(naam) + " " + "|" + " " + str(bericht) + "\n"
 #res = [date_time, randomstation, naam, bericht]
 
 
