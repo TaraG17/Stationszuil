@@ -1,0 +1,56 @@
+CREATE TABLE Bericht(
+	berichtID serial,
+	naam varchar(255),
+	bericht varchar(140),
+	datum date, 
+	tijd time,
+	station varchar(255)		);
+
+CREATE TABLE Moderator(
+	ModeratorID serial,
+	naam varchar(255),
+	email varchar(255)
+					);
+
+CREATE TABLE Keuring(
+	KeuringID serial,
+	ModeratorID integer,
+	BerichtID integer,
+	Beoordeling varchar(255),
+ datum date, 
+	tijd time
+					);
+
+ALTER TABLE Bericht
+ADD primary key (BerichtID);
+
+ALTER TABLE Moderator
+ADD primary key (ModeratorID);
+
+ALTER TABLE Keuring
+ADD primary key (KeuringID);
+ALTER TABLE Keuring
+ADD CONSTRAINT moderator_moderatorid_fk
+	FOREIGN KEY (moderatorid)
+	references moderator(moderatorid);
+ALTER TABLE Keuring
+ADD CONSTRAINT bericht_berichtid_fk
+	FOREIGN KEY (berichtid)
+	references bericht(berichtid);
+
+CREATE TABLE station_service (
+     station_city VARCHAR (50) PRIMARY KEY NOT NULL,
+     country VARCHAR (2) NOT NULL,
+     ov_bike BOOLEAN NOT NULL,
+     elevator BOOLEAN NOT NULL,
+     toilet BOOLEAN NOT NULL,
+     park_and_ride BOOLEAN NOT NULL
+);
+
+INSERT INTO station_service (
+     -- station_id, station_code, station_name,
+    station_city, country, ov_bike, elevator, toilet, park_and_ride)
+VALUES
+('Amsterdam', 'NL', false, true, false, true),
+('Utrecht', 'NL', true, false, true, true),
+('Rotterdam', 'NL', true, true, false, false);
