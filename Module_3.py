@@ -2,25 +2,33 @@ import tkinter
 from tkinter import *
 import requests
 import psycopg2
+from functools import partial
 
-#---Het tonen van het weer---
-api_key = "befce6c12cc4de8793e5f9de6f2ace3a"
-locatie = "Utrecht"
-resource_uri = f"https://api.openweathermap.org/data/2.5/weather?q={locatie}&appid={api_key}"
-response = requests.get(resource_uri)
-response_data = response.json()
+#---Welcome message customizable per Station using button---
+def onclick(message):
+    welkom.config(text='Welcome to NS, Station ' + message)
+    locatie = message #Depending on button for designated station
 
-weather = response_data['weather'][0]['description'] #weer omschrijving
-temp = response_data['main']['temp']-272.15 #temperatuur van kelvin naar ceclius
+    #---Showing the weather for the specific station---
+    api_key = "befce6c12cc4de8793e5f9de6f2ace3a"
+    #locatie = ""
+    resource_uri = f"https://api.openweathermap.org/data/2.5/weather?q={locatie}&appid={api_key}"
+    response = requests.get(resource_uri)
+    response_data = response.json()
 
-#---Pagina opstelling---
+    weather = response_data['weather'][0]['description'] #weer omschrijving
+    temp = response_data['main']['temp']-272.15 #temperatuur van kelvin naar ceclius
+
+    weer.config(text='The weather today has ' + weather + ' with a temperature of ' + str(round(temp)) + ' degrees.')
+
+#---Page Setup---
 root = Tk()
-root.state('zoomed')
-root.configure(background='gold') #zorgt voor de iconic gele achtergrond
+root.state('zoomed') #Fullscreen
+root.configure(background='gold') #Provides the iconic yellow background
 
-#---Introduction to page---
+#---Introduction to Page | Head Title---
 welkom = Label(master=root,
-              text='Welcome to NS, Station Utrecht',
+              text='Welcome to NS',
               background='white',
               foreground='dark blue',
               font=('Sans', 16, 'bold'),
@@ -28,17 +36,39 @@ welkom = Label(master=root,
               height=2)
 welkom.pack()
 
-#---Het weer tonen---
+#---Buttons for different Stations---
+button_style = {
+    "background": "white", #Colour of button
+    "foreground": "darkblue", #Colour of font
+    "activebackground": "grey", #Colour when pressed
+    "activeforeground": "darkblue",
+    "font": ('Sans', 10, 'bold'), #Font style
+    "relief": "raised", #Style of button
+    "pady": 2} #Thickness
+
+button_Amsterdam = Button(master=root, text='Station Amsterdam', command=partial(onclick, "Amsterdam"), **button_style)
+button_Amsterdam.place(relx=1, x=-10, y=10, anchor='ne') #Placement
+button_Amsterdam.lift() #Lifting to the foreground
+
+button_Utrecht = Button(master=root, text='Station Utrecht', command=partial(onclick, "Utrecht"),**button_style)
+button_Utrecht.place(relx=1, x=-10, y=40, anchor='ne')
+button_Utrecht.lift()
+
+button_Rotterdam = Button(master=root, text='Station Rotterdam', command=partial(onclick, "Rotterdam"),**button_style)
+button_Rotterdam.place(relx=1, x=-10, y=70, anchor='ne')
+button_Rotterdam.lift()
+
+#---Showing the weather---
 weer = Label(master=root,
-             text='The weather today has ' + weather + ' with a temperature of ' + str(round(temp)) + ' degrees.',
              background='white',
              foreground='darkblue',
              font=('Sans', 14),
              width=150,
              height=1)
 weer.pack()
+weer.lower() #So that the white does not overlap the buttons
 
-#---Kop voor berichten---
+#---Header for messages---
 berichtenlabel = Label(master=root,
                text='Messages:',
                background='white',
@@ -48,7 +78,7 @@ berichtenlabel = Label(master=root,
                height=2)
 berichtenlabel.pack(pady=4)
 
-#---Het laten zien van de goedgekeurde berichten, limit 5---
+#---Displaying the approved messages, limit 5---
 connection_string = "host='4.234.116.133' dbname='stationszuil' user='postgres' password='geheimpje1234'"
 conn = psycopg2.connect(connection_string)
 cursor = conn.cursor()	# DictCursor, not the default cursor!
@@ -60,7 +90,7 @@ cursor.execute(query_berichten)
 records = cursor.fetchall()
 conn.close()
 
-#---Opmaak van berichten---
+#---Formatting messages---
 for record in records:
     showinglabel = Label(master=root,
                              text=f"{record[0]}, {record[1]}",
@@ -83,7 +113,7 @@ for record in records:
     faciliteiten = cursor.fetchall()
     conn.close()
 
-#---Kopje voor de faciliteiten---
+#---Header for facilities---
 faciliteitenlabel = Label(master=root,
                text='Facilities:',
                background='white',
@@ -93,7 +123,7 @@ faciliteitenlabel = Label(master=root,
                height=2)
 faciliteitenlabel.pack(pady=10)
 
-#---Fietsen op station---
+#---Bikes at designated station---
 for fiets in faciliteiten:
     ov_bike = f'{faciliteiten[0]}'
     gesplitst = ov_bike.strip('()').split(',')
@@ -115,7 +145,7 @@ for fiets in faciliteiten:
                              width=40,
                              height=2)
     fietsenlabel.pack(pady=2)
-#---Liften op station---
+#---Lifts at designated station---
 for lifts in faciliteiten:
     elevator = f'{faciliteiten[0]}'
     gesplitst = elevator.strip('()').split(',')
@@ -138,7 +168,7 @@ for lifts in faciliteiten:
                              height=2)
     liftenlabel.pack(pady=1)
 
-#---Toiletten op station---
+#---Toilets at designated station---
 for toilets in faciliteiten:
     wc = f'{faciliteiten[0]}'
     gesplitst = wc.strip('(').split(',')
@@ -161,7 +191,7 @@ for toilets in faciliteiten:
                              height=2)
     toilettenlabel.pack(pady=1)
 
-#---Park&Ride op station---
+#---Park&Ride at designated station---
 for parking in faciliteiten:
     pr = f'{faciliteiten[0]}'
     gesplitst = pr.strip('(').split(',')
@@ -184,16 +214,12 @@ for parking in faciliteiten:
                              height=2)
     parkridelabel.pack(pady=1)
 
-
-
-
-
-#---faciliteiten foto's---
+#---Facility Photos (I gave up)---
 #img = PhotoImage(file='images/img_lift.png')
 #foto = Label(master=root,
              # image=img)
 #foto.pack()
 #foto.lift()
 
-#---Dat de root blijft draaien---
+#---That the root remains running---
 root.mainloop()
