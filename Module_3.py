@@ -28,7 +28,7 @@ def onclick(message):
                            FROM station_service 
                            WHERE station_city = %s """
     cursor.execute(query_station, (locatie,)) #Does the facilities per station
-    faciliteiten = cursor.fetchone()  #Grabs the row 
+    faciliteiten = cursor.fetchone()  #Grabs the row
     conn.close()
 
 #---If Frame exists, then destroys---
@@ -36,7 +36,7 @@ def onclick(message):
         fac_frame.destroy()
 
 #---Frame for the facilities---
-    fac_frame = Frame(master=root, background='gold') #Seperate frame so that the labels don't get doubled 
+    fac_frame = Frame(master=root, background='gold') #Seperate frame so that the labels don't get doubled
     fac_frame.pack()
 
     # ---Header for facilities---
@@ -113,7 +113,7 @@ button_style = {
     "background": "white", #Colour of button
     "foreground": "darkblue", #Colour of font
     "activebackground": "grey", #Colour when pressed
-    "activeforeground": "darkblue", #Colour of font when pressed 
+    "activeforeground": "darkblue", #Colour of font when pressed
     "font": ('Sans', 10, 'bold'), #Font style
     "relief": "raised", #Style of button
     "pady": 2} #Thickness
@@ -165,7 +165,7 @@ conn.close()
 #---Formatting messages---
 for record in records:
     showinglabel = Label(master=root,
-                             text=f"{record[0]}, {record[1]}",
+                             text=f"{record[0]}, {record[1]}", #Text that shows the message with the random station
                              background='white',
                              foreground='dark blue',
                              font=('Sans', 14, 'bold'),
