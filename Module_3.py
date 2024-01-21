@@ -157,7 +157,7 @@ cursor = conn.cursor()	# DictCursor, not the default cursor!
 query_berichten = """SELECT bericht, station 
            FROM bericht 
            INNER JOIN keuring ON keuring.berichtid=bericht.berichtid 
-           WHERE beoordeling = 'Ja' ORDER BY bericht.tijd DESC LIMIT 5;""" #Limiting the last 5 messages
+           WHERE beoordeling = 'Ja' ORDER BY bericht.tijd + bericht.datum DESC LIMIT 5;""" #Limiting the last 5 messages
 cursor.execute(query_berichten)
 records = cursor.fetchall()
 conn.close()
